@@ -1,3 +1,7 @@
-terraform/.terraform
-*.priv
+terraform/.terraform/terraform.tfstate
+terraform/.terraform/providers/registry.terraform.io/hashicorp/aws/3.56.0/linux_amd64/terraform-provider-aws_v3.56.0_x5
+packer/jenkins_master/ansible/roles/users_with_keys/files/ppanter.pub
+packer/bastion/ansible/roles/setup/files/ubuntu.pub
+packer/bastion/ansible/roles/setup/files/ubuntu.priv
+terraform/.terraform.lock.hcl
 arch.drawio
