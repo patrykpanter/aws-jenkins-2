@@ -1,0 +1,42 @@
+# - name: "Create new users"
+#   user: 
+#     name: "{{ item.username }}"
+#   loop: "{{ usernames }}"
+
+# - name: "Make sure we have a 'admin' group"
+#   group:
+#     name: admin
+#     state: present
+
+# - name: "Allow 'admin' group to have passwordless sudo"
+#   lineinfile:
+#     dest: /etc/sudoers
+#     state: present
+#     regexp: "^%admin"
+#     line: "%admin ALL=(ALL) NOPASSWD: ALL"
+#     validate: visudo -cf %s
+
+# - name: "Add user to 'admin' group"
+#   user:
+#     name: "{{ item.username }}"
+#     groups: admin
+#     append: yes
+#   loop: "{{ usernames }}"
+
+# - name: "Add public keys"
+#   vars: 
+#     filename: "{{ item.1 }}.pub"
+#   lineinfile:
+#     path: "/home/{{ item.0.username }}/.ssh/authorized_keys"
+#     line: "{{ lookup('file', filename) }}"
+#     create: yes
+#   loop: "{{ usernames | subelements('key') }}"
+
+- name: "Add private keys"
+  vars: 
+    filename: "{{ item.1 }}.priv"
+  lineinfile:
+    path: "/home/{{ item.0.username }}/key.pem"
+    line: "{{ lookup('file', filename) }}"
+    create: yes
+  loop: "{{ usernames | subelements('key') }}"

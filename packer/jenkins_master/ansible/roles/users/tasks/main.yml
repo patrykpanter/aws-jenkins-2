@@ -1,0 +1,25 @@
+- name: "Create new users"
+  user: 
+    name: "{{ item.username }}"
+    # group: admin
+  loop: "{{ usernames }}"
+
+- name: "Make sure we have a 'admin' group"
+  group:
+    name: admin
+    state: present
+
+- name: "Allow 'admin' group to have passwordless sudo"
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%admin"
+    line: "%admin ALL=(ALL) NOPASSWD: ALL"
+    validate: visudo -cf %s
+
+- name: "Add user to 'admin' group"
+  user:
+    name: "{{ item.username }}"
+    groups: admin
+    append: yes
+  loop: "{{ usernames }}"

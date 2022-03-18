@@ -1,0 +1,8 @@
+- name: "Add public keys"
+  vars: 
+    filename: "{{ item.1 }}.pub"
+  lineinfile:
+    path: "/home/{{ item.0.username }}/.ssh/authorized_keys"
+    line: "{{ lookup('file', filename) }}"
+    create: yes
+  loop: "{{ usernames | subelements('key') }}"
