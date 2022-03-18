@@ -32,6 +32,5 @@ build {
   provisioner "ansible" {
     playbook_file = "./ansible/playbook.yml"
     host_alias    = "jenkins_master"
-    ansible_env_vars = [ "ANSIBLE_CONFIG=ansible/ansible.cfg" ]
   }
 }
