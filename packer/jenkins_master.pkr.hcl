@@ -9,7 +9,7 @@ packer {
 
 variable "ami_prefix" {
   type    = string
-  default = "packer-bastion"
+  default = "packer-jenkins-master"
 }
 
 locals {
@@ -29,15 +29,9 @@ build {
     "source.amazon-ebs.ubuntu"
   ]
 
-#   provisioner "shell" {
-#     inline = [
-#       "sudo useradd -m -s /bin/bash ppanter",
-#       "sudo usermod -aG sudo ppanter",
-#     ]
-#   }
-
   provisioner "ansible" {
-    playbook_file = "./ansible/playbook.yml"
-    host_alias    = "bastion"
+    playbook_file = "./playbook.yml"
+    host_alias    = "jenkins_master"
+    ansible_env_vars = [ "ANSIBLE_CONFIG=ansible.cfg" ]
   }
 }
