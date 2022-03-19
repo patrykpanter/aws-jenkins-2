@@ -9,3 +9,9 @@
 
   roles:
   - users
+
+- hosts: jenkins_node
+  become: true
+
+  roles:
+  - users

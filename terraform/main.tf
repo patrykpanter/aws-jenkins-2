@@ -101,6 +101,16 @@ resource "aws_security_group" "jenkins_bastion_sg" {
   }
 }
 
+data "aws_ami" "bastion" {
+  filter {
+    name   = "name"
+    values = ["packer-bastion-*"]
+  }
+  most_recent = true
+
+  owners = ["699942661490"]
+}
+
 resource "aws_instance" "jenkins_bastion_ec2" {
   ami           = data.aws_ami.bastion.id
   instance_type = "t2.micro"
@@ -111,16 +121,6 @@ resource "aws_instance" "jenkins_bastion_ec2" {
   tags = {
     Name = "jenkins-bastion-ec2"
   }
-}
-
-data "aws_ami" "bastion" {
-  filter {
-    name   = "name"
-    values = ["packer-bastion-*"]
-  }
-  most_recent = true
-
-  owners = ["699942661490"]
 }
 
 resource "aws_key_pair" "deployer" {
@@ -189,8 +189,18 @@ resource "aws_security_group" "jenkins_master_sg" {
   }
 }
 
+data "aws_ami" "jenkins_master" {
+  filter {
+    name   = "name"
+    values = ["packer-jenkins-master-*"]
+  }
+  most_recent = true
+
+  owners = ["699942661490"]
+}
+
 resource "aws_instance" "jenkins_master_ec2" {
-  ami           = "ami-0d527b8c289b4af7f"
+  ami           = data.aws_ami.jenkins_master.id
   instance_type = "t2.micro"
 	subnet_id = aws_subnet.jenkins_master_subnet.id
 	vpc_security_group_ids = [aws_security_group.jenkins_master_sg.id]
@@ -201,34 +211,34 @@ resource "aws_instance" "jenkins_master_ec2" {
   }
 }
 
-resource "aws_nat_gateway" "jenkins_master_nat_gw" {
-  allocation_id = aws_eip.jenkins-nat-eip.id
-  subnet_id     = aws_subnet.jenkins_master_subnet.id
+# resource "aws_nat_gateway" "jenkins_master_nat_gw" {
+#   allocation_id = aws_eip.jenkins-nat-eip.id
+#   subnet_id     = aws_subnet.jenkins_master_subnet.id
 
-  tags = {
-    Name = "jenkins-master-nat-gw"
-  }
+#   tags = {
+#     Name = "jenkins-master-nat-gw"
+#   }
 
-  # To ensure proper ordering, it is recommended to add an explicit dependency
-  # on the Internet Gateway for the VPC.
-  depends_on = [aws_internet_gateway.jenkins_igw]
-}
+#   # To ensure proper ordering, it is recommended to add an explicit dependency
+#   # on the Internet Gateway for the VPC.
+#   depends_on = [aws_internet_gateway.jenkins_igw]
+# }
 
-resource "aws_eip" "jenkins-nat-eip" {
-	vpc = true
-	tags = {
-		Name = "jenkins-nat-eip"
-	}
-}
+# resource "aws_eip" "jenkins-nat-eip" {
+# 	vpc = true
+# 	tags = {
+# 		Name = "jenkins-nat-eip"
+# 	}
+# }
 
 # Jenkins node subnet
 resource "aws_route_table" "jenkins_node_rt" {
   vpc_id = aws_vpc.jenkins_vpc.id
 	
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.jenkins_master_nat_gw.id
-  }
+  # route {
+  #   cidr_block = "0.0.0.0/0"
+  #   gateway_id = aws_nat_gateway.jenkins_master_nat_gw.id
+  # }
 
 	tags = {
     Name = "jenkins-node-rt"
@@ -282,8 +292,18 @@ resource "aws_security_group" "jenkins_node_sg" {
   }
 }
 
+data "aws_ami" "jenkins-node" {
+  filter {
+    name   = "name"
+    values = ["packer-jenkins-node-*"]
+  }
+  most_recent = true
+
+  owners = ["699942661490"]
+}
+
 resource "aws_instance" "jenkins_node_ec2" {
-  ami           = "ami-0d527b8c289b4af7f"
+  ami           = data.aws_ami.jenkins-node.id
   instance_type = "t2.micro"
 	subnet_id = aws_subnet.jenkins_node_subnet.id
 	vpc_security_group_ids = [aws_security_group.jenkins_node_sg.id]
