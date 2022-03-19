@@ -1,0 +1,11 @@
+- hosts: bastion
+  become: true
+
+  roles:
+  - setup_bastion_host
+
+- hosts: jenkins_master
+  become: true
+
+  roles:
+  - users

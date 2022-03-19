@@ -1,5 +1,0 @@
-- hosts: jenkins_master
-  become: true
-
-  roles:
-  - users
