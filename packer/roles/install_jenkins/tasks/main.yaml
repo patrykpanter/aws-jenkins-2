@@ -1,0 +1,27 @@
+- name: "Install Java"
+  apt:
+    name: openjdk-11-jre
+    update_cache: yes
+
+# - name: "Download deb key"
+#   shell:
+#     cmd: "curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee   /usr/share/keyrings/jenkins-keyring.asc > /dev/null"
+
+- name: "Add Jenkins repository key"
+  apt_key:
+    url: "{{ key_url }}"
+    state: present
+
+# - name: "Copy deb key"
+#   shell:
+#     cmd: "echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]   https://pkg.jenkins.io/debian-stable binary/ | sudo tee   /etc/apt/sources.list.d/jenkins.list > /dev/null"
+
+- name: "Add Jenkins repository"
+  apt_repository:
+    repo: "{{ repository_entry }}"
+    state: present
+
+- name: "Install Jenkins"
+  apt:
+    name: jenkins
+    update_cache: yes
