@@ -24,7 +24,7 @@ provider "aws" {
 
 # VPC
 resource "aws_vpc" "jenkins_vpc" {
-  cidr_block = "11.0.0.0/16"
+  cidr_block = var.vpc.cidr
 
   tags = {
     Name = "jenkins-vpc"
@@ -68,7 +68,7 @@ resource "aws_route_table_association" "bastion_rt_association" {
 
 resource "aws_subnet" "jenkins_bastion_subnet" {
   vpc_id     = aws_vpc.jenkins_vpc.id
-  cidr_block = "11.0.0.0/24"
+  cidr_block = var.vpc.subnets.bastion.cidr
 	map_public_ip_on_launch = true
 
   tags = {
@@ -86,7 +86,7 @@ resource "aws_security_group" "jenkins_bastion_sg" {
     from_port        = 22
     to_port          = 22
     protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    cidr_blocks      = [var.my_ip]
   }
 
   egress {
@@ -149,7 +149,7 @@ resource "aws_route_table_association" "jenkins_master_rt_association" {
 
 resource "aws_subnet" "jenkins_master_subnet" {
   vpc_id     = aws_vpc.jenkins_vpc.id
-  cidr_block = "11.0.1.0/24"
+  cidr_block = var.vpc.subnets.jenkins_master.cidr
 	map_public_ip_on_launch = true
 
   tags = {
@@ -174,7 +174,7 @@ resource "aws_security_group" "jenkins_master_sg" {
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
-    cidr_blocks = ["83.243.35.91/32"]
+    cidr_blocks = [var.my_ip]
   }
 
   egress {
@@ -252,7 +252,7 @@ resource "aws_route_table_association" "jenkins_node_rt_association" {
 
 resource "aws_subnet" "jenkins_node_subnet" {
   vpc_id     = aws_vpc.jenkins_vpc.id
-  cidr_block = "11.0.2.0/24"
+  cidr_block = var.vpc.subnets.jenkins_node.cidr
 
   tags = {
     Name = "jenkins-node-subnet"
