@@ -2,6 +2,7 @@
   user: 
     name: "{{ item.username }}"
     # group: admin
+    shell: "/bin/bash"
   loop: "{{ usernames }}"
 
 - name: "Make sure we have a 'admin' group"

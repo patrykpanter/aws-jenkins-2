@@ -10,6 +10,7 @@
   roles:
   - users
   - users_with_keys
+  - install_jenkins
 
 - hosts: jenkins_node
   become: true
