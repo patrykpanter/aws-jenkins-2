@@ -25,3 +25,15 @@
   apt:
     name: jenkins
     update_cache: yes
+
+- name: Delete /var/lib/jenkins default content
+  file:
+    state: absent
+    path: /var/lib/jenkins/
+
+- name: "Mount jenkins home dir volume on startup"
+  lineinfile:
+    dest: /etc/fstab
+    state: present
+    insertafter: EOF
+    line: "UUID=f0230132-4864-4eea-b634-0ad7f51507c9 /var/lib/jenkins ext4 defaults,discard 0 1"

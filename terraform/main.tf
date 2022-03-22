@@ -70,6 +70,7 @@ resource "aws_subnet" "jenkins_bastion_subnet" {
   vpc_id     = aws_vpc.jenkins_vpc.id
   cidr_block = var.vpc.subnets.bastion.cidr
 	map_public_ip_on_launch = true
+  availability_zone = "eu-central-1b"
 
   tags = {
     Name = "jenkins-bastion-subnet"
@@ -117,6 +118,7 @@ resource "aws_instance" "jenkins_bastion_ec2" {
 	subnet_id = aws_subnet.jenkins_bastion_subnet.id
 	vpc_security_group_ids = [aws_security_group.jenkins_bastion_sg.id]
 	key_name        = aws_key_pair.deployer.key_name
+  availability_zone = "eu-central-1b"
 
   tags = {
     Name = "jenkins-bastion-ec2"
@@ -151,6 +153,7 @@ resource "aws_subnet" "jenkins_master_subnet" {
   vpc_id     = aws_vpc.jenkins_vpc.id
   cidr_block = var.vpc.subnets.jenkins_master.cidr
 	map_public_ip_on_launch = true
+  availability_zone = "eu-central-1b"
 
   tags = {
     Name = "jenkins-master-subnet"
@@ -205,6 +208,7 @@ resource "aws_instance" "jenkins_master_ec2" {
 	subnet_id = aws_subnet.jenkins_master_subnet.id
 	vpc_security_group_ids = [aws_security_group.jenkins_master_sg.id]
 	key_name        = aws_key_pair.deployer.key_name
+  availability_zone = "eu-central-1b"
 
   tags = {
     Name = "jenkins-master-ec2"
@@ -231,6 +235,12 @@ resource "aws_instance" "jenkins_master_ec2" {
 # 	}
 # }
 
+resource "aws_volume_attachment" "jenkins_master_ebs_att" {
+  device_name = "/dev/sdf"
+  volume_id   = "vol-090d8ed13914dd4bf"
+  instance_id = aws_instance.jenkins_master_ec2.id
+}
+
 # Jenkins node subnet
 resource "aws_route_table" "jenkins_node_rt" {
   vpc_id = aws_vpc.jenkins_vpc.id
@@ -253,6 +263,7 @@ resource "aws_route_table_association" "jenkins_node_rt_association" {
 resource "aws_subnet" "jenkins_node_subnet" {
   vpc_id     = aws_vpc.jenkins_vpc.id
   cidr_block = var.vpc.subnets.jenkins_node.cidr
+  availability_zone = "eu-central-1b"
 
   tags = {
     Name = "jenkins-node-subnet"
@@ -308,6 +319,7 @@ resource "aws_instance" "jenkins_node_ec2" {
 	subnet_id = aws_subnet.jenkins_node_subnet.id
 	vpc_security_group_ids = [aws_security_group.jenkins_node_sg.id]
 	key_name        = aws_key_pair.deployer.key_name
+  availability_zone = "eu-central-1b"
 
   tags = {
     Name = "jenkins-node-ec2"
