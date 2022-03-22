@@ -5,7 +5,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "3.56.0"
+      version = "4.6.0"
     }
 
   }
@@ -239,6 +239,7 @@ resource "aws_volume_attachment" "jenkins_master_ebs_att" {
   device_name = "/dev/sdf"
   volume_id   = "vol-090d8ed13914dd4bf"
   instance_id = aws_instance.jenkins_master_ec2.id
+  stop_instance_before_detaching = true
 }
 
 # Jenkins node subnet
