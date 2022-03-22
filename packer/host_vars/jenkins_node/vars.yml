@@ -1,3 +1,5 @@
 usernames:
   - username: ppanter
     key: ["ppanter"]
+  - username: jenkins
+    key: ["jenkins"]

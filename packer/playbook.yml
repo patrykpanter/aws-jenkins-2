@@ -10,6 +10,7 @@
   roles:
   - users
   - users_with_keys
+  - install_java
   - install_jenkins
 
 - hosts: jenkins_node
@@ -18,3 +19,4 @@
   roles:
   - users
   - users_with_keys
+  - install_java
