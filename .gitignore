@@ -1,3 +1,4 @@
 terraform/.terraform
 *.priv
 arch.drawio
+terraform.tfstate
