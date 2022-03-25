@@ -3,3 +3,9 @@ usernames:
     key: ["ppanter"]
   - username: jenkins
     key: ["jenkins"]
+
+directories:
+  - path: /var/jenkins
+    owner: jenkins
+    group: jenkins
+    mode: "u=rwx,g=r,o=r"

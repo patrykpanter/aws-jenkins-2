@@ -5,7 +5,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.6.0"
+      version = "4.7.0"
     }
 
   }
@@ -209,6 +209,14 @@ resource "aws_instance" "jenkins_master_ec2" {
 	vpc_security_group_ids = [aws_security_group.jenkins_master_sg.id]
 	key_name        = aws_key_pair.deployer.key_name
   availability_zone = "eu-central-1b"
+  user_data_replace_on_change = true
+
+  user_data = <<EOF
+#!/bin/bash
+sudo /etc/init.d/jenkins stop
+sudo sed -i 's=<host>.*</host>=<host>${aws_instance.jenkins_node_ec2.private_ip}</host>=g' /var/lib/jenkins/nodes/remote-node/config.xml
+sudo /etc/init.d/jenkins start
+EOF
 
   tags = {
     Name = "jenkins-master-ec2"
@@ -289,7 +297,8 @@ resource "aws_security_group" "jenkins_node_sg" {
     from_port        = 22
     to_port          = 22
     protocol         = "tcp"
-    cidr_blocks      = [ "${aws_instance.jenkins_master_ec2.private_ip}/32" ]
+    #cidr_blocks      = [ "${aws_instance.jenkins_master_ec2.private_ip}/32" ]
+    cidr_blocks      = [ "${var.vpc.subnets.jenkins_master.cidr}" ] # edited because of cycle error!
   }
 
   egress {

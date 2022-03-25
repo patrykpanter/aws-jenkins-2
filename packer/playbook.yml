@@ -2,7 +2,7 @@
   become: true
 
   roles:
-  - setup_bastion_host
+  - users_with_keys
 
 - hosts: jenkins_master
   become: true
@@ -20,3 +20,4 @@
   - users
   - users_with_keys
   - install_java
+  - setup_jenkins_node

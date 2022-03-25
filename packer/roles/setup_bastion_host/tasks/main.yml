@@ -32,11 +32,11 @@
 #     create: yes
 #   loop: "{{ usernames | subelements('key') }}"
 
-- name: "Add private keys"
-  vars: 
-    filename: "{{ item.1 }}.priv"
-  lineinfile:
-    path: "/home/{{ item.0.username }}/key.pem"
-    line: "{{ lookup('file', filename) }}"
-    create: yes
-  loop: "{{ usernames | subelements('key') }}"
+# - name: "Add private keys"
+#   vars: 
+#     filename: "{{ item.1 }}.priv"
+#   lineinfile:
+#     path: "/home/{{ item.0.username }}/key.pem"
+#     line: "{{ lookup('file', filename) }}"
+#     create: yes
+#   loop: "{{ usernames | subelements('key') }}"
