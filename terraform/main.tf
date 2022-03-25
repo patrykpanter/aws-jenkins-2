@@ -23,29 +23,29 @@ provider "aws" {
 }
 
 # VPC
-resource "aws_vpc" "jenkins_vpc" {
-  cidr_block = var.vpc.cidr
+# resource "aws_vpc" "jenkins_vpc" {
+#   cidr_block = var.vpc.cidr
 
-  tags = {
-    Name = "jenkins-vpc"
-  }
-}
+#   tags = {
+#     Name = "jenkins-vpc"
+#   }
+# }
 
-resource "aws_route_table" "jenkins_vpc_rt" {
-  vpc_id = aws_vpc.jenkins_vpc.id
+# resource "aws_route_table" "jenkins_vpc_rt" {
+#   vpc_id = aws_vpc.jenkins_vpc.id
 	
-	tags = {
-    Name = "jenkins-vpc-rt"
-  }
-}
+# 	tags = {
+#     Name = "jenkins-vpc-rt"
+#   }
+# }
 
-resource "aws_internet_gateway" "jenkins_igw" {
-  vpc_id = aws_vpc.jenkins_vpc.id
+# resource "aws_internet_gateway" "jenkins_igw" {
+#   vpc_id = aws_vpc.jenkins_vpc.id
 
-  tags = {
-    Name = "jenkins-igw"
-  }
-}
+#   tags = {
+#     Name = "jenkins-igw"
+#   }
+# }
 
 # Bastion host
 resource "aws_route_table" "jenkins_bastion_rt" {
