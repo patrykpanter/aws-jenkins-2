@@ -12,7 +12,11 @@ variable vpc {
     description = "Network configuration"
     type = object({
         cidr = string
-        subnets = map(map(string))
+        subnets = map(object({
+            cidr = string
+            public_ip = bool
+            nat = bool
+        }))
     })
 }
 

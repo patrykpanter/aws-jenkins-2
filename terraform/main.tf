@@ -23,6 +23,12 @@ provider "aws" {
 }
 
 # VPC
+module "vpc" {
+  source = "./modules/vpc"
+  cidr = var.vpc.cidr
+
+}
+
 # resource "aws_vpc" "jenkins_vpc" {
 #   cidr_block = var.vpc.cidr
 
