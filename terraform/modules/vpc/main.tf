@@ -1,128 +1,128 @@
-resource "aws_vpc" "main" {
-    cidr_block = var.cidr
+terraform {
+  required_version = ">= 1.1.6"
 }
 
-resource "aws_route_table" "vpc_rt" {
-  vpc_id = aws_vpc.main.id
-	
-	tags = {
-    Name = "vpc-rt"
-  }
+resource "aws_vpc" "main" {
+    cidr_block = var.cidr
+    tags = {
+      Name = "vpc-${var.vpc_name_prefix}"
+    }
 }
 
 resource "aws_internet_gateway" "vpc_igw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "vpc-igw"
+    Name = "${var.vpc_name_prefix}-igw"
   }
 }
 
-# Bastion subnet
-resource "aws_route_table" "jenkins_bastion_rt" {
-  vpc_id = aws_vpc.jenkins_vpc.id
-	
+resource "aws_route_table" "vpc_igw_rt" {
+  vpc_id = aws_vpc.main.id
+
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.vpc_igw.id
   }
 
 	tags = {
-    Name = "jenkins-bastion-rt"
+    Name = "${var.vpc_name_prefix}-igw-rt"
   }
 }
 
-resource "aws_route_table_association" "bastion_rt_association" {
-  subnet_id      = aws_subnet.jenkins_bastion_subnet.id
-  route_table_id = aws_route_table.jenkins_bastion_rt.id
-}
+# # Przerobić na fora
+# resource "aws_subnet" "subnet" {
+#   vpc_id     = aws_vpc.main.id
+#   cidr_block = var.subnets_map.bastion.cidr
+# 	map_public_ip_on_launch = var.subnets_map.bastion.is_public
+#   availability_zone = var.subnets_map.bastion.az
 
-resource "aws_subnet" "jenkins_bastion_subnet" {
-  vpc_id     = aws_vpc.jenkins_vpc.id
-  cidr_block = var.vpc.subnets.bastion.cidr
-	map_public_ip_on_launch = true
-  availability_zone = "eu-central-1b"
+#   tags = {
+#     Name = "${var.vpc_name_prefix}-${var.subnets_map.bastion.name_prefix}-subnet"
+#   }
+# }
+
+# resource "aws_route_table_association" "bastion_rt_association" {
+#   subnet_id      = aws_subnet.subnet.id
+#   route_table_id = aws_route_table.vpc_igw_rt.id
+# }
+
+resource "aws_subnet" "subnet" {
+
+  for_each = var.subnets_map
+
+  vpc_id     = aws_vpc.main.id
+  cidr_block = each.value.cidr
+	map_public_ip_on_launch = each.value.is_public
+  availability_zone = each.value.az
 
   tags = {
-    Name = "jenkins-bastion-subnet"
+    Name = "${var.vpc_name_prefix}-${each.value.name_prefix}-subnet"
   }
 }
 
-# Jenkins master subnet
-resource "aws_route_table" "jenkins_master_rt" {
-  vpc_id = aws_vpc.jenkins_vpc.id
+locals {
+  public_subnets_map = {for k, v in var.subnets_map: k => v if v.is_public == true}
+}
+
+resource "aws_route_table_association" "igw_rt_association" {
+  for_each = local.public_subnets_map
+  subnet_id      = aws_subnet.subnet[each.key].id
+  route_table_id = aws_route_table.vpc_igw_rt.id
+}
+
+# Resources below used only when at least one "has_nat" parameter defined as "true"
+
+locals { 
+  subnets_with_nat_map = {for k, v in var.subnets_map: k => v if v.has_nat == true}
+}
+
+resource "aws_eip" "nat-eip" {
+  for_each = local.subnets_with_nat_map
+
+	vpc = true
+	tags = {
+		Name = "${var.vpc_name_prefix}-${each.value.name_prefix}-nat-eip"
+	}
+}
+
+resource "aws_nat_gateway" "nat_gw" {
+  for_each = local.subnets_with_nat_map
+  
+  allocation_id = aws_eip.nat-eip[each.key].id
+  subnet_id     = aws_subnet.subnet[each.key].id
+
+  tags = {
+    Name = "${var.vpc_name_prefix}-${each.value.name_prefix}-nat-gw"
+  }
+
+  # To ensure proper ordering, it is recommended to add an explicit dependency
+  # on the Internet Gateway for the VPC.
+  depends_on = [aws_internet_gateway.vpc_igw]
+}
+
+locals {
+  subnets_using_nat = {for k, v in var.subnets_map: k => v if v.is_using_nat == true}
+}
+
+resource "aws_route_table" "private_rt" {
+  for_each = local.subnets_using_nat
+  
+  vpc_id = aws_vpc.main.id
 	
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.jenkins_igw.id
+    gateway_id = aws_nat_gateway.nat_gw[each.value.nat_gw].id
   }
 
 	tags = {
-    Name = "jenkins-master-rt"
+    Name = "${var.vpc_name_prefix}-${each.value.name_prefix}-private-rt"
   }
 }
 
-resource "aws_route_table_association" "jenkins_master_rt_association" {
-  subnet_id      = aws_subnet.jenkins_master_subnet.id
-  route_table_id = aws_route_table.jenkins_master_rt.id
-}
+resource "aws_route_table_association" "private_rt_association" {
+  for_each = local.subnets_using_nat
 
-resource "aws_subnet" "jenkins_master_subnet" {
-  vpc_id     = aws_vpc.jenkins_vpc.id
-  cidr_block = var.vpc.subnets.jenkins_master.cidr
-	map_public_ip_on_launch = true
-  availability_zone = "eu-central-1b"
-
-  tags = {
-    Name = "jenkins-master-subnet"
-  }
-}
-
-# resource "aws_nat_gateway" "jenkins_master_nat_gw" {
-#   allocation_id = aws_eip.jenkins-nat-eip.id
-#   subnet_id     = aws_subnet.jenkins_master_subnet.id
-
-#   tags = {
-#     Name = "jenkins-master-nat-gw"
-#   }
-
-#   # To ensure proper ordering, it is recommended to add an explicit dependency
-#   # on the Internet Gateway for the VPC.
-#   depends_on = [aws_internet_gateway.jenkins_igw]
-# }
-
-# resource "aws_eip" "jenkins-nat-eip" {
-# 	vpc = true
-# 	tags = {
-# 		Name = "jenkins-nat-eip"
-# 	}
-# }
-
-# Jenkins node subnet
-resource "aws_route_table" "jenkins_node_rt" {
-  vpc_id = aws_vpc.jenkins_vpc.id
-	
-  # route {
-  #   cidr_block = "0.0.0.0/0"
-  #   gateway_id = aws_nat_gateway.jenkins_master_nat_gw.id
-  # }
-
-	tags = {
-    Name = "jenkins-node-rt"
-  }
-}
-
-resource "aws_route_table_association" "jenkins_node_rt_association" {
-  subnet_id      = aws_subnet.jenkins_node_subnet.id
-  route_table_id = aws_route_table.jenkins_node_rt.id
-}
-
-resource "aws_subnet" "jenkins_node_subnet" {
-  vpc_id     = aws_vpc.jenkins_vpc.id
-  cidr_block = var.vpc.subnets.jenkins_node.cidr
-  availability_zone = "eu-central-1b"
-
-  tags = {
-    Name = "jenkins-node-subnet"
-  }
+  subnet_id      = aws_subnet.subnet[each.key].id
+  route_table_id = aws_route_table.private_rt[each.key].id
 }
