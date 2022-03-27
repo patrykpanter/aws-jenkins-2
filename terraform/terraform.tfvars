@@ -1,6 +1,6 @@
 # infra_region = "eu-central-1"
 
-my_ip = "0.0.0.0/0"
+my_ip = "0.0.0.0"
 
 vpc = {
     name_prefix = "jenkins"
@@ -33,5 +33,28 @@ vpc = {
             is_using_nat = true
             nat_gw = "jenkins_master"
         }
+    }
+}
+
+security_groups = {
+    ssh = {
+        name_prefix = "ssh-public"
+        ingress_port = 22
+        ingress_cidr_blocks = "0.0.0.0/0"
+    }
+    ssh_jenkins_node = {
+        name_prefix = "ssh-jenkins-node"
+        ingress_port = 22
+        ingress_cidr_blocks = "11.0.2.0/24"
+    }    
+    ssh_bastion = {
+        name_prefix = "ssh-bastion"
+        ingress_port = 22
+        ingress_cidr_blocks = "11.0.1.0/24"
+    }
+    http_jenkins_master = {
+        name_prefix = "http-jenkins-master"
+        ingress_port = 8080
+        ingress_cidr_blocks = "0.0.0.0/0"
     }
 }

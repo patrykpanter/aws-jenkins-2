@@ -30,6 +30,13 @@ module "vpc" {
   subnets_map = var.vpc.subnets
 }
 
+# Security groups
+module "security_group" {
+  source = "./modules/security_group"
+  security_groups = var.security_groups
+  vpc_id = module.vpc.vpc_id
+}
+
 # data "aws_ami" "bastion" {
 #   filter {
 #     name   = "name"
