@@ -33,3 +33,16 @@ variable security_groups {
         ingress_cidr_blocks = string
     }))
 }
+
+variable ec2s {
+    description = "EC2 hosts configuration"
+    type = map(object({
+        subnet = string
+        security_groups = set(string)
+        packer_ami_prefix = string
+        packer_ami_owner = string
+        name_prefix = string
+        instance_type = string
+        availability_zone = string
+    }))
+}

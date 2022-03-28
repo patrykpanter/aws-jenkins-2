@@ -37,20 +37,12 @@ module "security_group" {
   vpc_id = module.vpc.vpc_id
 }
 
-# data "aws_ami" "bastion" {
-#   filter {
-#     name   = "name"
-#     values = ["packer-bastion-*"]
-#   }
-#   most_recent = true
-
-#   owners = ["699942661490"]
-# }
-
-# module "ec2" {
-#   source = "./modules/ec2"
-
-# }
+module "ec2" {
+  source = "./modules/ec2"
+  ec2s_map = var.ec2s
+  subnet_ids_map = module.vpc.subnet_ids
+  security_group_ids_map = module.security_group.security_group_ids
+}
 
 # resource "aws_key_pair" "deployer" {
 #   key_name   = "deployer-key"
