@@ -91,7 +91,7 @@ ec2s = {
         instance_type = "t2.micro"
         availability_zone = "eu-central-1b"
         is_private_ip = true
-        private_ip = "11.0.2.1/32"
+        private_ip = "11.0.3.22"
     }
 }
 

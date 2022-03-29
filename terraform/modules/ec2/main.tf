@@ -27,28 +27,31 @@ resource "aws_instance" "ec2" {
 
   ami           = data.aws_ami.packer_ami[each.key].id
   instance_type = each.value.instance_type
-  subnet_id = var.subnet_ids_map[each.value.subnet]
-  vpc_security_group_ids = local.security_group_ids_map_of_sets[each.key]
 # key_name        = aws_key_pair.deployer.key_name
   availability_zone = each.value.availability_zone
+
+  network_interface {
+    network_interface_id = aws_network_interface.network_interface[each.key].id
+    device_index = 0
+  }
 
   tags = {
     Name = "${each.value.name_prefix}-ec2"
   }
 }
 
-# resource "aws_network_interface" "network_interface" {
-#   for_each = var.ec2s_map
+resource "aws_network_interface" "network_interface" {
+  for_each = var.ec2s_map
 
-#   subnet_id   = var.subnet_ids_map[each.value.subnet]
-#   private_ips = each.value.is_private_ip ? [each.value.private_ip] : []
+  subnet_id   = var.subnet_ids_map[each.value.subnet]
+  private_ips = each.value.is_private_ip ? [each.value.private_ip] : []
 
-#   vpc_security_group_ids = local.security_group_ids_map_of_sets[each.key]
+  security_groups = local.security_group_ids_map_of_sets[each.key]
   
-#   tags = {
-#     Name = "${each.value.name_prefix}-ni"
-#   }
-# }
+  tags = {
+    Name = "${each.value.name_prefix}-ni"
+  }
+}
 
 resource "aws_volume_attachment" "ebs" {
   device_name = "/dev/sdf"
