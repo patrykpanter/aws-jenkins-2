@@ -37,6 +37,19 @@ resource "aws_instance" "ec2" {
   }
 }
 
+# resource "aws_network_interface" "network_interface" {
+#   for_each = var.ec2s_map
+
+#   subnet_id   = var.subnet_ids_map[each.value.subnet]
+#   private_ips = each.value.is_private_ip ? [each.value.private_ip] : []
+
+#   vpc_security_group_ids = local.security_group_ids_map_of_sets[each.key]
+  
+#   tags = {
+#     Name = "${each.value.name_prefix}-ni"
+#   }
+# }
+
 resource "aws_volume_attachment" "ebs" {
   device_name = "/dev/sdf"
   volume_id   = "vol-090d8ed13914dd4bf"

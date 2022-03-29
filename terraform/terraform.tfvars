@@ -68,6 +68,8 @@ ec2s = {
         name_prefix = "jenkins-bastion"
         instance_type = "t2.micro"
         availability_zone = "eu-central-1b"
+        is_private_ip = false
+        private_ip = ""
     }
     jenkins_master = {
         subnet = "jenkins_master"
@@ -77,6 +79,8 @@ ec2s = {
         name_prefix = "jenkins-master"
         instance_type = "t2.micro"
         availability_zone = "eu-central-1b"
+        is_private_ip = false
+        private_ip = ""
     }
     jenkins_node = {
         subnet = "jenkins_node"
@@ -86,6 +90,8 @@ ec2s = {
         name_prefix = "jenkins-node"
         instance_type = "t2.micro"
         availability_zone = "eu-central-1b"
+        is_private_ip = true
+        private_ip = "11.0.2.1/32"
     }
 }
 

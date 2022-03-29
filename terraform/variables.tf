@@ -44,6 +44,8 @@ variable ec2s {
         name_prefix = string
         instance_type = string
         availability_zone = string
+        is_private_ip = bool
+        private_ip = string
     }))
 }
 
