@@ -30,23 +30,6 @@ resource "aws_route_table" "vpc_igw_rt" {
   }
 }
 
-# # Przerobić na fora
-# resource "aws_subnet" "subnet" {
-#   vpc_id     = aws_vpc.main.id
-#   cidr_block = var.subnets_map.bastion.cidr
-# 	map_public_ip_on_launch = var.subnets_map.bastion.is_public
-#   availability_zone = var.subnets_map.bastion.az
-
-#   tags = {
-#     Name = "${var.vpc_name_prefix}-${var.subnets_map.bastion.name_prefix}-subnet"
-#   }
-# }
-
-# resource "aws_route_table_association" "bastion_rt_association" {
-#   subnet_id      = aws_subnet.subnet.id
-#   route_table_id = aws_route_table.vpc_igw_rt.id
-# }
-
 resource "aws_subnet" "subnet" {
 
   for_each = var.subnets_map

@@ -27,7 +27,7 @@ vpc = {
         jenkins_node = {
             name_prefix = "node"
             az = "eu-central-1b"
-            cidr = "11.0.3.0/24"
+            cidr = "11.0.3.1/32"
             is_public = false
             has_nat = false
             is_using_nat = false
@@ -66,6 +66,24 @@ ec2s = {
         packer_ami_prefix = "packer-bastion-*"
         packer_ami_owner = "699942661490"
         name_prefix = "jenkins-bastion"
+        instance_type = "t2.micro"
+        availability_zone = "eu-central-1b"
+    }
+    jenkins_master = {
+        subnet = "jenkins_master"
+        security_groups = ["ssh_bastion", "http_jenkins_master"]
+        packer_ami_prefix = "packer-jenkins-master-*"
+        packer_ami_owner = "699942661490"
+        name_prefix = "jenkins-master"
+        instance_type = "t2.micro"
+        availability_zone = "eu-central-1b"
+    }
+    jenkins_node = {
+        subnet = "jenkins_node"
+        security_groups = ["ssh_bastion", "ssh_jenkins_node"]
+        packer_ami_prefix = "packer-jenkins-node-*"
+        packer_ami_owner = "699942661490"
+        name_prefix = "jenkins-node"
         instance_type = "t2.micro"
         availability_zone = "eu-central-1b"
     }

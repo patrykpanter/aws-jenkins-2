@@ -13,3 +13,7 @@ variable "ec2s_map" {
 variable "subnet_ids_map" {
     type = map(string)
 }
+
+variable "security_group_ids_map" {
+    type = map(string)
+}

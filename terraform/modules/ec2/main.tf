@@ -14,13 +14,21 @@ data "aws_ami" "packer_ami" {
   owners = ["${each.value.packer_ami_owner}"]
 }
 
+locals {
+    security_group_ids_map_of_sets =    {for k1, v1 in var.ec2s_map: k1 =>
+                                            flatten([for v2 in v1.security_groups: 
+                                                [for k3, v3 in var.security_group_ids_map: v3 if k3 == v2]
+                                            ])
+                                        }
+}
+
 resource "aws_instance" "ec2" {
   for_each = var.ec2s_map
 
   ami           = data.aws_ami.packer_ami[each.key].id
   instance_type = each.value.instance_type
   subnet_id = var.subnet_ids_map[each.value.subnet]
-#   vpc_security_group_ids = [aws_security_group.jenkins_bastion_sg.id]
+  vpc_security_group_ids = local.security_group_ids_map_of_sets[each.key]
 # key_name        = aws_key_pair.deployer.key_name
   availability_zone = each.value.availability_zone
 
@@ -28,30 +36,6 @@ resource "aws_instance" "ec2" {
     Name = "${each.value.name_prefix}-ec2"
   }
 }
-
-# Bastion Host
-# data "aws_ami" "bastion" {
-#   filter {
-#     name   = "name"
-#     values = ["packer-bastion-*"]
-#   }
-#   most_recent = true
-
-#   owners = ["699942661490"]
-# }
-
-# resource "aws_instance" "jenkins_bastion_ec2" {
-#   ami           = data.aws_ami.bastion.id
-#   instance_type = "t2.micro"
-#   subnet_id = aws_subnet.jenkins_bastion_subnet.id
-#   vpc_security_group_ids = [aws_security_group.jenkins_bastion_sg.id]
-#   key_name        = aws_key_pair.deployer.key_name
-#   availability_zone = "eu-central-1b"
-
-#   tags = {
-#     Name = "jenkins-bastion-ec2"
-#   }
-# }
 
 
 
@@ -77,19 +61,3 @@ resource "aws_instance" "ec2" {
 #   }
 # }
 
-# # Jenkins Node Host
-
-
-
-# resource "aws_instance" "jenkins_node_ec2" {
-#   ami           = data.aws_ami.jenkins-node.id
-#   instance_type = "t2.micro"
-# 	subnet_id = aws_subnet.jenkins_node_subnet.id
-# 	vpc_security_group_ids = [aws_security_group.jenkins_node_sg.id]
-# 	key_name        = aws_key_pair.deployer.key_name
-#   availability_zone = "eu-central-1b"
-
-#   tags = {
-#     Name = "jenkins-node-ec2"
-#   }
-# }
