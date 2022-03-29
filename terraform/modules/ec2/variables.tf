@@ -17,3 +17,7 @@ variable "subnet_ids_map" {
 variable "security_group_ids_map" {
     type = map(string)
 }
+
+variable "ebs_instance" {
+    type = string
+}

@@ -27,7 +27,7 @@ vpc = {
         jenkins_node = {
             name_prefix = "node"
             az = "eu-central-1b"
-            cidr = "11.0.3.1/32"
+            cidr = "11.0.3.0/24"
             is_public = false
             has_nat = false
             is_using_nat = false
@@ -88,3 +88,5 @@ ec2s = {
         availability_zone = "eu-central-1b"
     }
 }
+
+ebs_instance = "jenkins_master"

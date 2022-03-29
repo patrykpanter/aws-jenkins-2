@@ -37,27 +37,9 @@ resource "aws_instance" "ec2" {
   }
 }
 
-
-
-
-# resource "aws_instance" "jenkins_master_ec2" {
-#   ami           = data.aws_ami.jenkins_master.id
-#   instance_type = "t2.micro"
-# 	subnet_id = aws_subnet.jenkins_master_subnet.id
-# 	vpc_security_group_ids = [aws_security_group.jenkins_master_sg.id]
-# 	key_name        = aws_key_pair.deployer.key_name
-#   availability_zone = "eu-central-1b"
-#   user_data_replace_on_change = true
-
-#   user_data = <<EOF
-# #!/bin/bash
-# sudo /etc/init.d/jenkins stop
-# sudo sed -i 's=<host>.*</host>=<host>${aws_instance.jenkins_node_ec2.private_ip}</host>=g' /var/lib/jenkins/nodes/remote-node/config.xml
-# sudo /etc/init.d/jenkins start
-# EOF
-
-#   tags = {
-#     Name = "jenkins-master-ec2"
-#   }
-# }
-
+resource "aws_volume_attachment" "ebs" {
+  device_name = "/dev/sdf"
+  volume_id   = "vol-090d8ed13914dd4bf"
+  instance_id = aws_instance.ec2[var.ebs_instance].id
+  stop_instance_before_detaching = true
+}

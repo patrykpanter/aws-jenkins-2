@@ -46,3 +46,7 @@ variable ec2s {
         availability_zone = string
     }))
 }
+
+variable "ebs_instance" {
+    type = string
+}
