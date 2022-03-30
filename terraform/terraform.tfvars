@@ -57,6 +57,11 @@ security_groups = {
         ingress_port = 8080
         ingress_cidr_blocks = "0.0.0.0/0"
     }
+    http_lb = {
+        name_prefix = "http-lb"
+        ingress_port = 80
+        ingress_cidr_blocks = "0.0.0.0/0"
+    }
 }
 
 ec2s = {
@@ -96,3 +101,8 @@ ec2s = {
 }
 
 ebs_instance = "jenkins_master"
+
+lb = {
+    subnet = "jenkins_master"
+    security_group = "http_lb"
+}

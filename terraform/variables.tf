@@ -52,3 +52,7 @@ variable ec2s {
 variable "ebs_instance" {
     type = string
 }
+
+variable "lb" {
+    type = map(string)
+}
