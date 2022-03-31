@@ -13,7 +13,7 @@ vpc = {
             is_public = true
             has_nat = false
             is_using_nat = false
-            nat_gw = ""
+            nat_gw = null
         }
         jenkins_master = {
             name_prefix = "master"
@@ -22,7 +22,7 @@ vpc = {
             is_public = true
             has_nat = false
             is_using_nat = false
-            nat_gw = ""
+            nat_gw = null
         }
         jenkins_node = {
             name_prefix = "node"
