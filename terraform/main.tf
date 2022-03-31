@@ -45,13 +45,11 @@ module "ec2" {
   ebs_instance = var.ebs_instance
 }
 
-# resource "aws_key_pair" "deployer" {
-#   key_name   = "deployer-key"
-#   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJzvAxVDYpP9JlVe3CTtf1rYdkmhHCdqolf/LFJ0kRO9FutFSnSiKJYumy5bZXeP5fNE6zrt2JSm7DJn/hyaRmxQyuCPqTJs4czo20whXLkmA6W/1xfZH6T62aPea4+eLRUw8Vk+2OZ2hyOzxiItCOyZMkA5rvdiOGcHq7TLKA0s4nHbuNMR+zC1Fwl8ECoG9PeuAdaDGH3OOMWtQ+CbxZrHEGtWXuA2XNrlxanfLplaWEuiL5aKAGyDPcRJ0ub5qezPfm37/tJM3V5dKw4xtZjR8QsdMVXFUpVCrHeYo8fV1E5WpMrfWf5M6AeMcfyY9pzKlaS4uzhMsbtQrxf7dJbov3HsNhYvRhM+gAYXTv+hDMIsbCuCnhJLGS0zIyyk7muUzgy+jL+Ij/U0WLb3mSClpgk0uX7ekK7boHmJlZmHskvlW9gvbKw1vz20B5zmhE0PNtjgMbdKn8MkbVSErXKPczBVQ7zhM1Ll+2/DIlmloKUXaPyTMVk6CJnG39H4c= ppanter@DESKTOP-5OOPS6E"
-# }
-
 module "lb" {
   source = "./modules/lb"
-  subnet_id = module.vpc.subnet_ids[var.lb.subnet]
-  security_group_id = module.security_group.security_group_ids[var.lb.security_group]
+  name_prefix = var.lb.name_prefix
+  load_balancer_type = var.lb.load_balancer_type
+  log_bucket = var.lb.log_bucket
+  subnets = [for subnet in var.lb.subnets: module.vpc.subnet_ids[subnet]]
+  security_groups = [for group in var.lb.security_groups: module.security_group.security_group_ids[group]]
 }
