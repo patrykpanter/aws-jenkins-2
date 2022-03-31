@@ -31,4 +31,4 @@
     dest: /etc/fstab
     state: present
     insertafter: EOF
-    line: "UUID=f0230132-4864-4eea-b634-0ad7f51507c9 /var/lib/jenkins ext4 defaults,discard 0 1"
+    line: "UUID=f0230132-4864-4eea-b634-0ad7f51507c9 /var/lib/jenkins ext4 defaults,discard 0 2"
