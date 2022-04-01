@@ -8,7 +8,7 @@ vpc = {
     subnets = {
         bastion = {
             name_prefix = "bastion"
-            az = "eu-central-1b"
+            az = "eu-north-1a"
             cidr = "11.0.1.0/24"
             is_public = true
             has_nat = false
@@ -17,7 +17,7 @@ vpc = {
         }
         jenkins_master = {
             name_prefix = "master"
-            az = "eu-central-1b"
+            az = "eu-north-1a"
             cidr = "11.0.2.0/24"
             is_public = true
             has_nat = false
@@ -26,7 +26,7 @@ vpc = {
         }
         jenkins_node = {
             name_prefix = "node"
-            az = "eu-central-1b"
+            az = "eu-north-1a"
             cidr = "11.0.3.0/24"
             is_public = false
             has_nat = false
@@ -35,7 +35,7 @@ vpc = {
         }
         jenkins_second_lb = {
             name_prefix = "second_lb"
-            az = "eu-central-1c"
+            az = "eu-north-1b"
             cidr = "11.0.4.0/24"
             is_public = true
             has_nat = false
@@ -81,7 +81,7 @@ ec2s = {
         packer_ami_owner = "699942661490"
         name_prefix = "jenkins-bastion"
         instance_type = "t2.micro"
-        availability_zone = "eu-central-1b"
+        availability_zone = "eu-north-1a"
         is_private_ip = false
         private_ip = ""
     }
@@ -92,7 +92,7 @@ ec2s = {
         packer_ami_owner = "699942661490"
         name_prefix = "jenkins-master"
         instance_type = "t2.micro"
-        availability_zone = "eu-central-1b"
+        availability_zone = "eu-north-1a"
         is_private_ip = false
         private_ip = ""
     }
@@ -103,7 +103,7 @@ ec2s = {
         packer_ami_owner = "699942661490"
         name_prefix = "jenkins-node"
         instance_type = "t2.micro"
-        availability_zone = "eu-central-1b"
+        availability_zone = "eu-north-1a"
         is_private_ip = true
         private_ip = "11.0.3.22"
     }
@@ -113,8 +113,8 @@ ebs_instance = "jenkins_master"
 
 lb = {
     name_prefix = "jenkins"
-    public_port = 80
-    private_port = 8080
+    public_port = "80"
+    private_port = "8080"
     load_balancer_type = "application"
     log_bucket = "terraform-ppanter"
     subnets = ["jenkins_master", "jenkins_second_lb"]
