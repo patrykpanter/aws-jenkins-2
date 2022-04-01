@@ -8,7 +8,7 @@ terraform {
       version = "4.7.0"
     }
 
-  }
+}
 
   backend "s3" {
     bucket = "terraform-ppanter"
@@ -48,8 +48,12 @@ module "ec2" {
 module "lb" {
   source = "./modules/lb"
   name_prefix = var.lb.name_prefix
+  private_port = var.lb.private_port
+  public_port = var.lb.public_port
   load_balancer_type = var.lb.load_balancer_type
   log_bucket = var.lb.log_bucket
+  vpc_id = module.vpc.vpc_id
   subnets = [for subnet in var.lb.subnets: module.vpc.subnet_ids[subnet]]
   security_groups = [for group in var.lb.security_groups: module.security_group.security_group_ids[group]]
+  tarrget_instance_id = module.ec2.ec2s[var.lb.target_instance].id
 }

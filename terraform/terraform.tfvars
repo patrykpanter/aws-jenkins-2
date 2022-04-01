@@ -113,8 +113,11 @@ ebs_instance = "jenkins_master"
 
 lb = {
     name_prefix = "jenkins"
+    public_port = 80
+    private_port = 8080
     load_balancer_type = "application"
     log_bucket = "terraform-ppanter"
     subnets = ["jenkins_master", "jenkins_second_lb"]
     security_groups = ["http_lb"]
+    target_instance = "jenkins_master"
 }
