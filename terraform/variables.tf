@@ -54,5 +54,14 @@ variable "ebs_instance" {
 }
 
 variable "lb" {
-    type = map(string)
+    type = object({
+        name_prefix = string
+        public_port = string
+        private_port = string
+        load_balancer_type = string
+        log_bucket = string
+        subnets = set(string)
+        security_groups = set(string)
+        target_instance = string
+    })
 }

@@ -33,6 +33,15 @@ vpc = {
             is_using_nat = false
             nat_gw = "jenkins_master"
         }
+        jenkins_second_lb = {
+            name_prefix = "second_lb"
+            az = "eu-central-1c"
+            cidr = "11.0.4.0/24"
+            is_public = true
+            has_nat = false
+            is_using_nat = false
+            nat_gw = null
+        }
     }
 }
 
@@ -103,6 +112,12 @@ ec2s = {
 ebs_instance = "jenkins_master"
 
 lb = {
-    subnet = "jenkins_master"
-    security_group = "http_lb"
+    name_prefix = "jenkins"
+    public_port = 80
+    private_port = 8080
+    load_balancer_type = "application"
+    log_bucket = "terraform-ppanter"
+    subnets = ["jenkins_master", "jenkins_second_lb"]
+    security_groups = ["http_lb"]
+    target_instance = "jenkins_master"
 }
