@@ -18,9 +18,9 @@ locals {
 
 source "amazon-ebs" "ubuntu" {
   ami_name      = "${var.ami_prefix}-${local.timestamp}"
-  instance_type = "t2.micro"
-  region        = "eu-central-1"
-  source_ami    = "ami-0d527b8c289b4af7f"
+  instance_type = "t3.micro"
+  region        = "eu-north-1"
+  source_ami    = "ami-092cce4a19b438926"
   ssh_username = "ubuntu"
 }
 
