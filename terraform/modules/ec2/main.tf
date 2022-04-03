@@ -55,7 +55,7 @@ resource "aws_network_interface" "network_interface" {
 
 resource "aws_volume_attachment" "ebs" {
   device_name = "/dev/sdf"
-  volume_id   = "vol-090d8ed13914dd4bf"
+  volume_id   = "vol-0c7d2d380e3a2bb90"
   instance_id = aws_instance.ec2[var.ebs_instance].id
   stop_instance_before_detaching = true
 }

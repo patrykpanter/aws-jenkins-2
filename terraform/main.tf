@@ -19,7 +19,7 @@ terraform {
 
 # AWS provider config
 provider "aws" {
-  region = "eu-central-1"
+  region = "eu-north-1"
 }
 
 # VPC
