@@ -20,4 +20,5 @@
   - users
   - users_with_keys
   - install_java
+  - install_nodejs
   - setup_jenkins_node

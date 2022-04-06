@@ -1,0 +1,2 @@
+key_url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+repository_entry: "deb https://deb.nodesource.com/node_14.x focal main"
