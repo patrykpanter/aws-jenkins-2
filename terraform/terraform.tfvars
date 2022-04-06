@@ -20,7 +20,7 @@ vpc = {
             az = "eu-north-1a"
             cidr = "11.0.2.0/24"
             is_public = true
-            has_nat = false
+            has_nat = true
             is_using_nat = false
             nat_gw = null
         }
@@ -30,7 +30,7 @@ vpc = {
             cidr = "11.0.3.0/24"
             is_public = false
             has_nat = false
-            is_using_nat = false
+            is_using_nat = true
             nat_gw = "jenkins_master"
         }
         jenkins_second_lb = {
