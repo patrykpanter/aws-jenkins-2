@@ -55,7 +55,16 @@ resource "aws_network_interface" "network_interface" {
 
 resource "aws_volume_attachment" "ebs" {
   device_name = "/dev/sdf"
-  volume_id   = "vol-0c7d2d380e3a2bb90"
+  volume_id   = data.aws_ebs_volume.ebs_volume.volume_id
   instance_id = aws_instance.ec2[var.ebs_instance].id
   stop_instance_before_detaching = true
+}
+
+data "aws_ebs_volume" "ebs_volume" {
+  most_recent = true
+
+  filter {
+    name = "tag:Name"
+    values = ["jenkins-master-home-dir-2"]
+  }
 }
