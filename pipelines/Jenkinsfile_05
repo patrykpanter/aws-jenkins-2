@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    triggers {
+        cron('H/10 * * * *')
+    }
+    stages {
+        stage("hello AWS") {
+            steps {
+                withAWS(credentials: 'delete-ami-snapshots', region: 'eu-north-1') {
+                    sh 'echo "hello AWS"'
+                }
+            }
+        }
+        stage("Delete AMIs") {
+            steps {
+                withAWS(credentials: 'delete-ami-snapshots', region: 'eu-north-1') {
+                    sh 'for IMAGE in $(aws ec2 describe-images --owners self | jq -r \'."Images"[]."ImageId"\'); do aws ec2 deregister-image --image-id $IMAGE; done'
+                }
+            }
+        }
+        stage("Delete Snapshots") {
+            steps {
+                withAWS(credentials: 'delete-ami-snapshots', region: 'eu-north-1') {
+                    sh 'for IMAGE in $(aws ec2 describe-snapshots --owner self | jq -r \'."Snapshots"[]."SnapshotId"\');do aws ec2 delete-snapshot --snapshot-id $IMAGE;done'
+                }
+            }
+        }
+    }
+}

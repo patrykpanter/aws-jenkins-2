@@ -22,3 +22,5 @@
   - install_java
   - install_nodejs
   - setup_jenkins_node
+  - install_aws_cli
+  - install_jq
